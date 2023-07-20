@@ -2,8 +2,8 @@ const dotenv = require('dotenv')
 const fs = require('node:fs')
 const path = require('node:path')
 const {Client, Collection, GatewayIntentBits} = require('discord.js')
-const {token} = require('./config.json')
-const remindSchema = require('./src/schema/remindSchema')
+const {token} = require('../config.json')
+const remindSchema = require('./schema/remindSchema')
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ const client = new Client({intents: [
 
 // Have the client store a collection of the commands for interactive use
 client.commands = new Collection()
-const foldersPath = path.join(__dirname, 'src/commands');
+const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
@@ -34,7 +34,7 @@ for (const folder of commandFolders) {
 	}
 }
 
-const eventsPath = path.join(__dirname, 'src/events')
+const eventsPath = path.join(__dirname, 'events')
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
 
 for (const file of eventFiles){
