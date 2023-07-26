@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, ChannelSelectMenuBuilder, ActionRow } = require("discord.js");
+const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, ChannelSelectMenuBuilder } = require("discord.js");
 const remindSchema = require("../../schema/remindSchema");
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
             .setRequired(true))
         .addIntegerOption(option =>
             option.setName("time")
-            .setDescription("Set how many hours from now to be reminded")
+            .setDescription("Set how many minutes from now to be reminded")
             .setRequired(true)
             .setMinValue(1)
             .setMaxValue(24))
@@ -27,7 +27,7 @@ module.exports = {
         .setDMPermission(false),
         async execute(interaction){
             // set the time and information of the reminder
-            let time = Date.now() + interaction.options.getInteger("time") * 1000 * 60 * 60
+            let time = Date.now() + interaction.options.getInteger("time") * 1000 * 60
             const title = interaction.options.getString("title")
             const description = interaction.options.getString("description")
             const uid = interaction.user.id
@@ -48,17 +48,15 @@ module.exports = {
             
             const embed = new EmbedBuilder()
                                 .setColor('Blurple')
-                                .setDescription(`📝 Confirm the following information about your reminder:\n
-                                                Title: ${title}\n
-                                                Description: ${description ?? 'none'}\n
-                                                Reminding ${interaction.options.getInteger("time")} hours from now`)
+                                .setDescription(`📝 Confirm the following information about your reminder:\nTitle: ${title}\nDescription: ${description ?? 'none'}`)
                                 
-            const response = await interaction.reply({embeds: [embed], components: [confirmation]})
+            const response = await interaction.reply({content: `This reminder is planned <t:${Math.floor(time/1000)}:R> from now`, embeds: [embed], components: [confirmation]})
 
             //if the user prompts to get reminded in a channel, this is the channel selector
             const channelPicker = new ChannelSelectMenuBuilder()
                                 .setCustomId('channelpicker')
-                                .setLabel("Channel")
+                                .setPlaceholder('Choose a channel to be reminded in')
+                                .setMaxValues(1)
 
             const picker = new ActionRowBuilder()
                                 .addComponents(channelPicker)
@@ -70,7 +68,7 @@ module.exports = {
 
                 if (cnf.customId === 'confirm') {
                     if (!interaction.options.getBoolean("dm")){
-                        await cnf.update({content: "Please choose a channel to be reminded in.", embeds: [], components: [picker]})
+                        const chn = await cnf.update({content: "Please choose a channel to be reminded in.", embeds: [], components: [picker]});
                     }
                     await cnf.update({content: "Reminder set!", embeds: [], components: []})
 

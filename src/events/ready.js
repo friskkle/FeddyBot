@@ -11,13 +11,12 @@ module.exports = {
 		if (!mongoDBURL) return;
 
 		await mongoose.connect(mongoDBURL || '', {
-			keepAlive: true,
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 		})
 
 		if (mongoose.connect) {
-			console.log('The database is running!')
+			console.log('The database is up and running!')
 		}
 	},
 };
