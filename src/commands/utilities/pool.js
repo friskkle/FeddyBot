@@ -74,9 +74,11 @@ module.exports = {
             const category = interaction.options.getString('category') ?? undefined
             if(category){
                 await interaction.editReply({content: `Fetching a term from the category ${category}...`})
+                const count = await poolSchema.countDocuments({Category: `${category}`})
+                const random = Math.floor(Math.random() * count)
 
                 try{
-                    const term = await poolSchema.findOne({Category: `${category}`})
+                    const term = await poolSchema.findOne({Category: `${category}`}).skip(random)
                     await interaction.editReply({content: `Your term is: ${term.Term}`})
                 }
                 catch(e){
@@ -86,7 +88,11 @@ module.exports = {
             }
             else{
                 await interaction.editReply({content: `Fetching a term...`})
-                const term = await poolSchema.findOne()
+
+                const count = await poolSchema.countDocuments({})
+                const random = Math.floor(Math.random() * count)
+
+                const term = await poolSchema.findOne().skip(random)
                 await interaction.editReply({content: `Your term is: ${term.Term}`})
             }
         }
