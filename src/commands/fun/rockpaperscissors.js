@@ -101,7 +101,9 @@ module.exports = {
                         chosen[num] = selection
                     })
 
-                    const waiting = await wait(15000)
+                    const waiting = setTimeout(() => {
+                        console.log("timeout")
+                    }, 15000)
                     if (!chosen.includes(0)) clearTimeout(waiting);
 
                     //choosing the winner of the round
@@ -146,8 +148,21 @@ module.exports = {
                     }
 
                     if (score.includes(3)) {
-                        await battleChannel.send({content: `${user1} is the winner!`})
-                        break;
+                        if(score.find(3) == 0){
+                            const winner = new EmbedBuilder()
+                                    .setColor(0x5865F2)
+                                    .setTitle(`${user1} Wins!`)
+                                    .setImage('https://thumbs.gfycat.com/BriefMassiveGosling-max-1mb.gif')
+                            await battleChannel.send({content: `The match has concluded!`, embeds: [winner]})
+                        }
+                        else{
+                            const winner = new EmbedBuilder()
+                                    .setColor(0x5865F2)
+                                    .setTitle(`${user2} Wins!`)
+                                    .setImage('https://thumbs.gfycat.com/BriefMassiveGosling-max-1mb.gif')
+
+                            await battleChannel.send({content: `The match has concluded!`, embeds: [winner]})
+                        }
                     }
                     const nextTime = Date.now() + 6000
                     await battleChannel.send(`We will begin the next round shortly`)
