@@ -93,7 +93,7 @@ module.exports = {
                 const random = Math.floor(Math.random() * count)
 
                 const term = await poolSchema.findOne().skip(random)
-                await interaction.editReply({content: `Your term is: ${term.Term}`})
+                await interaction.editReply({content: `Your term is: ${term.Term} from the category ${term.Category}`})
             }
         }
     }

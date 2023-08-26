@@ -14,7 +14,7 @@ module.exports = {
             .setDescription("Set how many minutes from now to be reminded")
             .setRequired(true)
             .setMinValue(1)
-            .setMaxValue(24))
+            .setMaxValue(2400))
         .addStringOption(option =>
             option.setName("title")
             .setDescription("The occasion of the reminder")
