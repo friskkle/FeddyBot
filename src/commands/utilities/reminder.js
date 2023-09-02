@@ -51,7 +51,7 @@ module.exports = {
                                 .setDescription(`📝 Confirm the following information about your reminder:\nTitle: ${title}\nDescription: ${description ?? 'none'}`)
                                 
             const response = await interaction.reply({content: `This reminder is planned <t:${Math.floor(time/1000)}:R> from now`, embeds: [embed], components: [confirmation]})
-
+            console.log(`A reminder has been set`)
             //if the user prompts to get reminded in a channel, this is the channel selector
             const channelPicker = new ChannelSelectMenuBuilder()
                                 .setCustomId('channelpicker')

@@ -19,6 +19,7 @@ module.exports = {
             .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
             .setDMPermission(false),
     async execute(interaction){
+        console.log(`${interaction.user.username} is attempting to use mute`)
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)){
             interaction.reply({content: `You don't have the permission to mute members.`, ephemeral: true})
         }
