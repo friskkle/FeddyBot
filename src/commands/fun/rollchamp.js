@@ -8,7 +8,7 @@ module.exports = {
     async execute(interaction){
       await interaction.deferReply()
       let data = undefined
-        const apiURL = "https://ddragon.leagueoflegends.com/cdn/13.15.1/data/en_US/champion.json";
+        const apiURL = "https://ddragon.leagueoflegends.com/cdn/13.18.1/data/en_US/champion.json";
           
         try {
           const response = await fetch(apiURL);

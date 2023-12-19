@@ -5,6 +5,8 @@ let remindSchema = new Schema({
     Time: String,
     Title: String,
     Desc: String,
+    Channel: String,
+    DM: Boolean
 })
 
 module.exports = model("rSch", remindSchema);

@@ -1,7 +1,7 @@
 const dotenv = require('dotenv')
 const fs = require('node:fs')
 const path = require('node:path')
-const {Client, Collection, GatewayIntentBits} = require('discord.js')
+const {Client, Collection, GatewayIntentBits, EmbedBuilder} = require('discord.js')
 const {token} = require('../config.json')
 const remindSchema = require('./schema/remindSchema')
 
@@ -57,10 +57,22 @@ setInterval(async () => {
 		reminders.forEach(async reminder => {
 			if (reminder.Time > Date.now()) return;
 			const user = await client.users.fetch(reminder.User);
+			const dm = reminder.DM
+			const channelId = reminder.Channel
+			const embed = new EmbedBuilder()
+                                .setColor('Blurple')
+                                .setDescription(`📝 Confirm the following information about your reminder:\nTitle: ${reminder.Title}\nDescription: ${reminder.Desc ?? 'none'}`)
 
-			client.users.send(user, {
-				content: `Hey ${user}, I'm here to remind you about ${reminder.Title}.`
-			})
+			if(dm == true){
+					client.users.send(user, {
+					content: `Hey ${user}, I'm here to remind you about ${reminder.Title}.`,
+					embeds: [embed]
+				})
+			}
+			else{
+				const sendChannel = client.channels.cache.get(channelId)
+				await sendChannel.send({content: `Hey ${user}, I'm here to remind you about ${reminder.Title}.`, embeds: [embed]})
+			}
 
 			await remindSchema.deleteMany({
 				User: user.id,

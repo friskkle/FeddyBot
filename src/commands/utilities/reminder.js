@@ -62,22 +62,41 @@ module.exports = {
                                 .addComponents(channelPicker)
 
             const collectorFilter = i => i.user.id === interaction.user.id
+            let channelId = undefined
 
             try {
                 const cnf = await response.awaitMessageComponent({filter: collectorFilter, time: 60_000})
 
                 if (cnf.customId === 'confirm') {
+                    await cnf.update(`Confirmed...`)
+                    let sendChannel = undefined
                     if (!interaction.options.getBoolean("dm")){
-                        const chn = await cnf.update({content: "Please choose a channel to be reminded in.", embeds: [], components: [picker]});
+                        const chn = await cnf.editReply({content: "Please choose a channel to be reminded in.", embeds: [], components: [picker]});
+
+                        try{
+                            const pickChannel = await chn.awaitMessageComponent({filter: collectorFilter, time: 60_000})
+                            channelId = pickChannel.values[0]
+                            console.log(channelId)
+                            sendChannel = interaction.client.channels.cache.get(channelId)
+
+                            await cnf.editReply({content: `Got it, will remind you in the channel ${sendChannel} when the time comes.`, components: [], embeds: []})
+                        }
+                        catch(e){
+                            console.error(`An error occured: ${e}`)
+                        }
                     }
-                    await cnf.update({content: "Reminder set!", embeds: [], components: []})
+                    await cnf.followUp({content: "Reminder set!", embeds: [], components: []})
 
                     await remindSchema.create({
                         User: uid,
                         Time: time,
                         Title: title,
-                        Desc: description ?? 'none'
+                        Desc: description ?? 'none',
+                        Channel: channelId ?? 'none',
+                        DM: interaction.options.getBoolean("dm")
                     })
+
+                    console.log(`The ${title} reminder has been added to the database.`)
 
                 }
                 else if (cnf.customId === 'cancel') {
